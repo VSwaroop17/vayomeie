@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vayomeie — Conscious Luxury for the Modern Woman</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* ── VARIABLES & RESET ── */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --ivory:   #F7F3EE;
+    --cream:   #EDE7DC;
+    --terra:   #B8654A;
+    --terra-dk:#9A4F37;
+    --sage:    #5A7255;
+    --warm:    #8B7355;
+    --ink:     #1C1A18;
+    --mid:     #6B6257;
+    --light:   #D9D0C3;
+    --white:   #FDFBF8;
+    --ff-head: 'Cormorant Garamond', Georgia, serif;
+    --ff-body: 'Jost', sans-serif;
+    --ease: cubic-bezier(.23,1,.32,1);
+  }
+
+  html { scroll-behavior: smooth; font-size: 16px; }
+  body {
+    background: var(--ivory);
+    color: var(--ink);
+    font-family: var(--ff-body);
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none; /* Custom cursor used */
+  }
+
+  /* ── CUSTOM CURSOR ── */
+  #cursor {
+    position: fixed; top: 0; left: 0;
+    width: 12px; height: 12px; /* Slightly larger for better visibility */
+    background: var(--terra);
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%,-50%);
+    transition: transform .1s, width .3s var(--ease), height .3s var(--ease), background .3s;
+    z-index: 9999;
+    mix-blend-mode: multiply;
+  }
+  #cursor.hovered { width: 50px; height: 50px; background: var(--terra); opacity: .4; border: 1px solid var(--terra); mix-blend-mode: normal; }
+  @media (pointer: coarse) { #cursor { display: none; } body { cursor: auto; } }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--cream); }
+  ::-webkit-scrollbar-thumb { background: var(--terra); border-radius: 2px; }
+
+  /* ── LOADER ── */
+  #loader {
+    position: fixed; inset: 0;
+    background: var(--ink);
+    z-index: 10000;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 24px;
+    transition: opacity .8s var(--ease), visibility .8s;
+  }
+  #loader.done { opacity: 0; visibility: hidden; }
+  .loader-logo { color: var(--ivory); font-family: var(--ff-head); font-size: 2rem; font-weight: 300; letter-spacing: .3em; opacity: 0; animation: fadeUp .8s .3s var(--ease) forwards; }
+  .loader-line { width: 0; height: 1px; background: var(--terra); animation: growLine 1.2s .5s var(--ease) forwards; }
+  .loader-sub { color: var(--light); font-size: .65rem; letter-spacing: .3em; text-transform: uppercase; opacity: 0; animation: fadeUp .6s 1s var(--ease) forwards; }
+  @keyframes growLine { to { width: 180px; } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+  /* ── NAV (UPDATED CONTRAST) ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    padding: 0 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 70px;
+    transition: all .4s var(--ease);
+    color: var(--white); /* Default to white for video background */
+  }
+  
+  /* Scrolled State: Light background, dark text */
+  nav.scrolled {
+    background: rgba(247,243,238,.96);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    color: var(--ink); /* Switch to dark text */
+  }
+
+  .nav-logo img { height: 32px; object-fit: contain; display: block; filter: brightness(0) invert(1); transition: filter .3s; }
+  nav.scrolled .nav-logo img { filter: none; } /* Revert filter for dark logo on light bg */
+
+  .nav-logo-text {
+    font-family: var(--ff-head);
+    font-size: 1.4rem; font-weight: 400; letter-spacing: .15em;
+    color: inherit; text-decoration: none;
+    display: none;
+  }
+  .nav-links {
+    display: flex; gap: 36px; list-style: none;
+    align-items: center;
+  }
+  .nav-links a {
+    color: inherit; /* Inherit white or black based on nav state */
+    text-decoration: none;
+    font-size: .72rem; font-weight: 400; letter-spacing: .18em; text-transform: uppercase;
+    position: relative; padding-bottom: 2px;
+    transition: color .3s;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: 0; left: 0;
+    width: 0; height: 1px; background: var(--terra);
+    transition: width .35s var(--ease);
+  }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-links a:hover { color: var(--terra); }
+  
+  .nav-right { display: flex; align-items: center; gap: 20px; }
+  .nav-icon {
+    width: 36px; height: 36px;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all .3s;
+    background: none;
+    color: inherit; /* Inherit color */
+  }
+  /* Nav Icon Hover: Show circle border in Terra */
+  .nav-icon:hover { border-color: var(--terra); color: var(--terra); background: rgba(184, 101, 74, 0.1); }
+  
+  .nav-icon svg { width: 18px; height: 18px; stroke: currentColor; fill: none; transition: stroke .3s; }
+  
+  .hamburger {
+    display: none; flex-direction: column; gap: 5px;
+    cursor: pointer; background: none; border: none; padding: 4px;
+  }
+  .hamburger span {
+    display: block; width: 24px; height: 1.5px;
+    background: currentColor; transition: transform .3s, opacity .3s;
+  }
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .nav-icon:not(.cart-icon) { display: none; }
+  }
+
+  /* ── MOBILE MENU ── */
+  .mobile-menu {
+    position: fixed; inset: 0; background: var(--ink); z-index: 999;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 40px; opacity: 0; visibility: hidden;
+    transition: opacity .4s var(--ease), visibility .4s;
+  }
+  .mobile-menu.open { opacity: 1; visibility: visible; }
+  .mobile-menu a {
+    font-family: var(--ff-head); font-size: 2.8rem; font-weight: 300; letter-spacing: .05em;
+    color: var(--ivory); text-decoration: none; transition: color .3s;
+  }
+  .mobile-menu a:hover { color: var(--terra); }
+  .mobile-close {
+    position: absolute; top: 24px; right: 24px;
+    background: none; border: none; color: var(--ivory); font-size: 1.5rem; cursor: pointer;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative; height: 100svh; min-height: 600px;
+    overflow: hidden; display: flex; align-items: flex-end;
+  }
+  .hero-video {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: cover;
+    filter: brightness(.45); /* Darkened slightly to ensure white nav pops */
+  }
+  .hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(28,26,24,.8) 0%, rgba(28,26,24,.2) 50%, transparent 100%);
+  }
+  .hero-content {
+    position: relative; z-index: 2;
+    padding: 0 60px 80px;
+    max-width: 700px;
+  }
+  .hero-eyebrow {
+    font-size: .65rem; letter-spacing: .4em; text-transform: uppercase;
+    color: var(--terra); margin-bottom: 20px;
+    opacity: 0; animation: fadeUp .8s 1.6s var(--ease) forwards;
+  }
+  .hero-title {
+    font-family: var(--ff-head); font-size: clamp(3rem,6vw,5.5rem); font-weight: 300; line-height: 1.05;
+    color: var(--white); margin-bottom: 28px;
+    opacity: 0; animation: fadeUp .9s 1.8s var(--ease) forwards;
+  }
+  .hero-title em { font-style: italic; color: var(--terra); }
+  .hero-sub {
+    font-size: .85rem; font-weight: 300; letter-spacing: .08em; line-height: 1.8;
+    color: rgba(253,251,248,.9); margin-bottom: 40px;
+    opacity: 0; animation: fadeUp .9s 2s var(--ease) forwards;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 36px;
+    background: var(--terra); color: var(--white);
+    font-size: .72rem; font-weight: 400; letter-spacing: .2em; text-transform: uppercase;
+    text-decoration: none; border: none; cursor: pointer;
+    transition: all .3s var(--ease);
+    opacity: 0; animation: fadeUp .9s 2.2s var(--ease) forwards;
+  }
+  .btn-primary:hover { background: var(--terra-dk); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+  .btn-primary svg { width: 14px; height: 14px; stroke: currentColor; fill: none; }
+  .hero-scroll {
+    position: absolute; bottom: 36px; right: 48px; z-index: 2;
+    display: flex; align-items: center; gap: 10px;
+    color: rgba(253,251,248,.6); font-size: .62rem; letter-spacing: .3em; text-transform: uppercase;
+    opacity: 0; animation: fadeUp .6s 2.4s var(--ease) forwards;
+  }
+  .scroll-line {
+    width: 40px; height: 1px; background: currentColor;
+    animation: scrollPulse 2s 3s infinite;
+  }
+  @keyframes scrollPulse {
+    0%,100% { transform: scaleX(1); opacity: .6; }
+    50% { transform: scaleX(1.4); opacity: 1; }
+  }
+  @media (max-width: 768px) {
+    .hero-content { padding: 0 24px 60px; max-width: 100%; }
+    .hero-scroll { right: 24px; }
+  }
+
+  /* ── TICKER ── */
+  .ticker {
+    background: var(--terra); overflow: hidden;
+    padding: 13px 0; position: relative;
+  }
+  .ticker-inner {
+    display: flex; align-items: center;
+    animation: ticker 28s linear infinite;
+    white-space: nowrap;
+  }
+  .ticker-item {
+    font-size: .65rem; letter-spacing: .3em; text-transform: uppercase;
+    color: var(--white); padding: 0 28px;
+    display: inline-flex; align-items: center; gap: 14px;
+  }
+  .ticker-dot { width: 4px; height: 4px; background: rgba(253,251,248,.5); border-radius: 50%; flex-shrink: 0; }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* ── SECTION COMMONS ── */
+  section { padding: 100px 60px; }
+  .section-label {
+    font-size: .62rem; letter-spacing: .4em; text-transform: uppercase;
+    color: var(--terra); margin-bottom: 16px; display: block;
+  }
+  .section-title {
+    font-family: var(--ff-head); font-size: clamp(2rem,4vw,3.2rem); font-weight: 300; line-height: 1.15;
+    color: var(--ink);
+  }
+  .section-title em { font-style: italic; }
+  .section-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 56px; }
+  .view-all {
+    font-size: .68rem; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--ink); text-decoration: none;
+    border-bottom: 1px solid var(--terra); padding-bottom: 2px;
+    transition: color .3s;
+  }
+  .view-all:hover { color: var(--terra); }
+  @media (max-width: 768px) {
+    section { padding: 70px 20px; }
+    .section-head { flex-direction: column; align-items: flex-start; gap: 20px; margin-bottom: 36px; }
+  }
+
+  /* ── REVEAL ANIMATION ── */
+  .reveal {
+    opacity: 0; transform: translateY(32px);
+    transition: opacity .9s var(--ease), transform .9s var(--ease);
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+  .reveal-delay-1 { transition-delay: .1s; }
+  .reveal-delay-2 { transition-delay: .2s; }
+  .reveal-delay-3 { transition-delay: .3s; }
+  .reveal-delay-4 { transition-delay: .4s; }
+
+  /* ── COLLECTION GRID (HOVER STYLE 1: STRONG REVEAL) ── */
+  .collection-section { background: var(--white); }
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+  }
+  .product-card {
+    position: relative; overflow: hidden;
+    background: var(--cream); cursor: pointer;
+    aspect-ratio: 3/4;
+  }
+  .product-card:first-child {
+    grid-column: span 2;
+    grid-row: span 2;
+    aspect-ratio: auto;
+  }
+  .product-card img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform .8s var(--ease);
+    display: block;
+  }
+  .product-card:hover img { transform: scale(1.08); }
+  
+  /* UPDATED TEXT VISIBILITY */
+  .product-info {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 28px 24px 24px;
+    /* Stronger gradient to ensure text visibility */
+    background: linear-gradient(to top, rgba(28,26,24,0.98) 0%, rgba(28,26,24,0.8) 60%, transparent 100%);
+    backdrop-filter: blur(4px); /* Blur effect behind text */
+    transform: translateY(12px); opacity: 0;
+    transition: transform .4s var(--ease), opacity .4s;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .product-card:hover .product-info { transform: none; opacity: 1; }
+  
+  .product-name {
+    font-family: var(--ff-head); font-size: 1.1rem; font-weight: 500;
+    color: var(--white); line-height: 1.2; margin-bottom: 6px;
+  }
+  .product-price {
+    font-size: .8rem; letter-spacing: .1em;
+    color: rgba(253,251,248,.9);
+  }
+  .product-price .original { text-decoration: line-through; opacity: .6; margin-right: 10px; font-size: .75rem; }
+  .product-tag {
+    position: absolute; top: 16px; left: 16px;
+    background: var(--white); color: var(--ink);
+    font-size: .58rem; letter-spacing: .2em; text-transform: uppercase;
+    padding: 6px 12px; font-weight: 500;
+  }
+  @media (max-width: 1024px) {
+    .products-grid { grid-template-columns: repeat(2, 1fr); }
+    .product-card:first-child { grid-column: span 2; }
+  }
+  @media (max-width: 600px) {
+    .products-grid { grid-template-columns: 1fr; gap: 3px; }
+    .product-card:first-child { grid-column: span 1; }
+    .product-info { opacity: 1; transform: none; } /* Always show info on mobile */
+  }
+
+  /* ── CRAFT STRIP ── */
+  .craft-strip {
+    background: var(--ink); padding: 90px 60px;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center;
+  }
+  .craft-text .section-title { color: var(--ivory); }
+  .craft-text .section-label { color: var(--terra); }
+  .craft-body {
+    font-size: .9rem; line-height: 1.9; color: rgba(237,231,220,.7);
+    margin-top: 24px; max-width: 440px;
+  }
+  .craft-body strong { color: var(--ivory); font-weight: 400; }
+  .craft-cta { margin-top: 40px; }
+  .craft-images {
+    display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
+    gap: 8px; height: 480px;
+  }
+  .craft-images .ci {
+    overflow: hidden; position: relative;
+  }
+  .craft-images .ci img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
+  .craft-images .ci:hover img { transform: scale(1.06); }
+  .craft-images .ci:first-child { grid-row: span 2; }
+  @media (max-width: 900px) {
+    .craft-strip { grid-template-columns: 1fr; gap: 40px; padding: 60px 20px; }
+    .craft-images { height: 300px; }
+  }
+
+  /* ── USP STRIP ── */
+  .usp-strip {
+    background: var(--cream); padding: 70px 60px;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+  }
+  .usp-item {
+    padding: 40px 48px;
+    background: var(--cream);
+    display: flex; flex-direction: column; align-items: center; text-align: center; gap: 18px;
+  }
+  .usp-icon { width: 60px; height: 60px; object-fit: contain; filter: sepia(.3); transition: transform .3s; }
+  .usp-item:hover .usp-icon { transform: scale(1.1); filter: sepia(0); }
+  .usp-title {
+    font-family: var(--ff-head); font-size: 1.2rem; font-weight: 400;
+    color: var(--ink);
+  }
+  .usp-desc { font-size: .8rem; line-height: 1.8; color: var(--mid); max-width: 240px; }
+  @media (max-width: 768px) {
+    .usp-strip { grid-template-columns: 1fr; padding: 40px 20px; gap: 0; }
+    .usp-item { padding: 32px 24px; border-bottom: 1px solid var(--light); }
+  }
+
+  /* ── MATERIALS (HOVER STYLE 2: SEPIA FILTER) ── */
+  .materials-section { background: var(--ivory); }
+  .materials-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px;
+  }
+  .material-card {
+    position: relative; overflow: hidden;
+    aspect-ratio: 3/4; cursor: pointer;
+  }
+  .material-card img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform .6s var(--ease), filter .5s;
+    filter: sepia(0.4) brightness(0.95); /* Desaturated look initially */
+  }
+  .material-card:hover img { 
+    transform: scale(1.08); 
+    filter: sepia(0) brightness(1.1); /* Full color/vibrant on hover */
+  }
+  .material-label {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 32px 16px 16px;
+    background: linear-gradient(to top, rgba(28,26,24,.9), transparent);
+  }
+  .material-name {
+    font-family: var(--ff-head); font-size: 1rem; color: var(--white); font-weight: 400;
+    display: block; margin-bottom: 4px; transition: transform .3s;
+  }
+  .material-card:hover .material-name { transform: translateY(-4px); }
+  
+  .material-role {
+    font-size: .62rem; letter-spacing: .2em; text-transform: uppercase;
+    color: rgba(253,251,248,.65);
+  }
+  @media (max-width: 1024px) {
+    .materials-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .materials-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ── MARQUEE PHOTO STRIP ── */
+  .photo-strip { overflow: hidden; padding: 0; }
+  .photo-strip-inner {
+    display: flex;
+    animation: slideLeft 30s linear infinite;
+    width: max-content;
+  }
+  .photo-strip-item {
+    width: 320px; height: 420px; flex-shrink: 0;
+    overflow: hidden; margin-right: 6px;
+  }
+  .photo-strip-item img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform .6s var(--ease);
+  }
+  .photo-strip-item:hover img { transform: scale(1.04); }
+  @keyframes slideLeft { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @media (max-width: 600px) {
+    .photo-strip-item { width: 220px; height: 280px; }
+  }
+
+  /* ── STORY BAND ── */
+  .story-band {
+    background: var(--terra); padding: 100px 60px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+  }
+  .story-eyebrow { font-size: .62rem; letter-spacing: .4em; text-transform: uppercase; color: rgba(253,251,248,.7); margin-bottom: 16px; display: block; }
+  .story-title {
+    font-family: var(--ff-head); font-size: clamp(2.2rem,4vw,3.4rem); font-weight: 300; line-height: 1.1;
+    color: var(--white);
+  }
+  .story-title em { font-style: italic; }
+  .story-body {
+    font-size: .88rem; line-height: 1.9; color: rgba(253,251,248,.8); margin-top: 24px;
+  }
+  .story-cta {
+    margin-top: 36px;
+    display: inline-flex; align-items: center; gap: 10px;
+    color: var(--white); font-size: .68rem; letter-spacing: .22em; text-transform: uppercase;
+    text-decoration: none; border-bottom: 1px solid rgba(253,251,248,.5); padding-bottom: 2px;
+    transition: border-color .3s;
+  }
+  .story-cta:hover { border-color: var(--white); }
+  .story-visual {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; height: 420px;
+  }
+  .story-visual img { width: 100%; height: 100%; object-fit: cover; }
+  .story-visual .sv-tall { grid-row: span 2; height: 100%; }
+  @media (max-width: 900px) {
+    .story-band { grid-template-columns: 1fr; gap: 40px; padding: 60px 20px; }
+    .story-visual { height: 260px; }
+  }
+
+  /* ── JOURNAL (HOVER STYLE 3: TEXT ANIMATION) ── */
+  .journal-section { background: var(--white); }
+  .journal-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px;
+  }
+  .journal-card { cursor: pointer; }
+  .journal-img {
+    aspect-ratio: 4/3; overflow: hidden; margin-bottom: 20px; background: var(--cream);
+  }
+  .journal-img img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform .6s var(--ease);
+  }
+  .journal-card:hover .journal-img img { transform: scale(1.05); }
+  .journal-category {
+    font-size: .6rem; letter-spacing: .3em; text-transform: uppercase;
+    color: var(--terra); margin-bottom: 10px; display: block;
+    transition: letter-spacing .3s;
+  }
+  .journal-card:hover .journal-category { letter-spacing: .4em; color: var(--terra-dk); }
+  
+  .journal-title {
+    font-family: var(--ff-head); font-size: 1.25rem; font-weight: 400; line-height: 1.35;
+    color: var(--ink); margin-bottom: 10px;
+    position: relative;
+    display: inline-block;
+  }
+  /* Underline animation for journal title */
+  .journal-title::after {
+    content: ''; position: absolute; left: 0; bottom: -2px; width: 0; height: 1px;
+    background: var(--terra); transition: width .3s var(--ease);
+  }
+  .journal-card:hover .journal-title::after { width: 100%; }
+  
+  .journal-excerpt { font-size: .78rem; line-height: 1.8; color: var(--mid); }
+  .journal-date { font-size: .62rem; letter-spacing: .15em; text-transform: uppercase; color: var(--light); margin-top: 14px; display: block; }
+  @media (max-width: 900px) {
+    .journal-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
+  }
+  @media (max-width: 540px) {
+    .journal-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── STATS ── */
+  .stats-band {
+    background: var(--ink); padding: 80px 60px;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid rgba(237,231,220,.1);
+  }
+  .stat-item {
+    text-align: center; padding: 20px;
+    border-right: 1px solid rgba(237,231,220,.1);
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-num {
+    font-family: var(--ff-head); font-size: clamp(2.5rem,4vw,3.8rem); font-weight: 300;
+    color: var(--terra); line-height: 1;
+  }
+  .stat-label { font-size: .65rem; letter-spacing: .2em; text-transform: uppercase; color: rgba(237,231,220,.5); margin-top: 8px; }
+  @media (max-width: 768px) {
+    .stats-band { grid-template-columns: 1fr 1fr; padding: 40px 20px; gap: 0; }
+    .stat-item { border-right: none; border-bottom: 1px solid rgba(237,231,220,.1); padding: 28px 16px; }
+    .stat-item:nth-child(odd) { border-right: 1px solid rgba(237,231,220,.1); }
+  }
+
+  /* ── NEWSLETTER ── */
+  .newsletter {
+    background: var(--cream); padding: 100px 60px;
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+  }
+  .newsletter .section-title { margin-bottom: 16px; }
+  .newsletter-sub { font-size: .85rem; line-height: 1.8; color: var(--mid); margin-bottom: 36px; max-width: 440px; }
+  .newsletter-form {
+    display: flex; gap: 0; max-width: 460px; width: 100%;
+    border: 1px solid var(--warm);
+  }
+  .newsletter-form input {
+    flex: 1; padding: 14px 20px;
+    border: none; background: transparent;
+    font-family: var(--ff-body); font-size: .8rem; letter-spacing: .05em;
+    color: var(--ink); outline: none;
+  }
+  .newsletter-form input::placeholder { color: var(--warm); }
+  .newsletter-form button {
+    padding: 14px 28px; background: var(--ink); color: var(--white); border: none; cursor: pointer;
+    font-family: var(--ff-body); font-size: .65rem; letter-spacing: .22em; text-transform: uppercase;
+    transition: background .3s;
+  }
+  .newsletter-form button:hover { background: var(--terra); }
+  @media (max-width: 600px) {
+    .newsletter { padding: 60px 20px; }
+    .newsletter-form { flex-direction: column; }
+    .newsletter-form button { padding: 14px; }
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink); padding: 80px 60px 40px;
+  }
+  .footer-top {
+    display: grid; grid-template-columns: 1.8fr 1fr 1fr 1fr;
+    gap: 60px; padding-bottom: 60px;
+    border-bottom: 1px solid rgba(237,231,220,.12);
+  }
+  .footer-brand-logo img { height: 32px; filter: brightness(0) invert(1); margin-bottom: 20px; }
+  .footer-tagline {
+    font-family: var(--ff-head); font-size: 1rem; font-weight: 300; font-style: italic;
+    color: rgba(237,231,220,.6); line-height: 1.6; max-width: 260px; margin-bottom: 28px;
+  }
+  .footer-social { display: flex; gap: 14px; }
+  .footer-social a {
+    width: 36px; height: 36px; border: 1px solid rgba(237,231,220,.2); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(237,231,220,.5); text-decoration: none;
+    font-size: .7rem; transition: all .3s;
+  }
+  .footer-social a:hover { border-color: var(--terra); color: var(--terra); background: rgba(184,101,74,0.1); }
+  .footer-col h4 {
+    font-size: .62rem; letter-spacing: .3em; text-transform: uppercase;
+    color: rgba(237,231,220,.4); margin-bottom: 20px; font-weight: 400;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li { margin-bottom: 12px; }
+  .footer-col ul a {
+    color: rgba(237,231,220,.65); font-size: .82rem; text-decoration: none;
+    transition: color .3s;
+  }
+  .footer-col ul a:hover { color: var(--terra); }
+  .footer-bottom {
+    padding-top: 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
+  }
+  .footer-copy { font-size: .7rem; color: rgba(237,231,220,.35); letter-spacing: .06em; }
+  .footer-made { font-size: .7rem; color: rgba(237,231,220,.35); }
+  .footer-made span { color: var(--terra); }
+  @media (max-width: 900px) {
+    footer { padding: 60px 20px 32px; }
+    .footer-top { grid-template-columns: 1fr 1fr; gap: 40px; }
+  }
+  @media (max-width: 540px) {
+    .footer-top { grid-template-columns: 1fr; gap: 32px; }
+    .footer-bottom { flex-direction: column; align-items: flex-start; }
+  }
+
+  /* ── HERITAGE BAND ── */
+  .heritage-band {
+    background: var(--cream); padding: 0; overflow: hidden;
+    color: var(--terra); height: 100px;
+  }
+  .heritage-band svg { width: 100%; height: 100%; display: block; }
+
+  /* ── PRODUCT SECOND GRID (HOVER STYLE 4: BORDER REVEAL) ── */
+  .new-arrivals { background: var(--ivory); }
+  .arrivals-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+  .arrival-card { cursor: pointer; position: relative; }
+  .arrival-img {
+    aspect-ratio: 2/3; overflow: hidden; background: var(--cream); margin-bottom: 16px;
+    position: relative;
+  }
+  /* The Border Effect */
+  .arrival-img::before {
+    content: ''; position: absolute; inset: 0;
+    border: 1px solid var(--terra);
+    opacity: 0; transform: scale(0.9);
+    transition: all .4s var(--ease);
+    pointer-events: none;
+    z-index: 2;
+  }
+  .arrival-card:hover .arrival-img::before { opacity: 1; transform: scale(1); }
+
+  .arrival-img img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform .6s var(--ease);
+  }
+  .arrival-card:hover .arrival-img img { transform: scale(1.05); }
+  .arrival-overlay {
+    position: absolute; inset: 0;
+    background: rgba(28,26,24,.2);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity .35s;
+    z-index: 1;
+  }
+  .arrival-card:hover .arrival-overlay { opacity: 1; }
+  .arrival-overlay span {
+    border: 1px solid var(--white); color: var(--white);
+    padding: 10px 24px; font-size: .65rem; letter-spacing: .2em; text-transform: uppercase;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(4px);
+  }
+  .arrival-name {
+    font-family: var(--ff-head); font-size: 1rem; font-weight: 400; color: var(--ink);
+    line-height: 1.35; margin-bottom: 6px;
+  }
+  .arrival-price { font-size: .75rem; color: var(--mid); }
+  .arrival-price .sale { color: var(--terra); margin-left: 6px; }
+  @media (max-width: 900px) {
+    .arrivals-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  }
+  @media (max-width: 400px) {
+    .arrivals-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cursor"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-logo">VAYOMEIE</div>
+  <div class="loader-line"></div>
+  <div class="loader-sub">Conscious Luxury · Crafted in India</div>
+</div>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" id="menuClose">✕</button>
+  <a href="#shop">Shop</a>
+  <a href="#story">Our Story</a>
+  <a href="#journal">Journal</a>
+  <a href="#contact">Contact</a>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#" class="nav-logo">
+    <!-- Logo is white by default (inverted filter), changes back on scroll -->
+    <img src="https://www.vayomeie.com/assets/img/logo/vayomeie_small_logo_HD.png" alt="Vayomeie" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+    <span class="nav-logo-text">VAYOMEIE</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#shop">Shop</a></li>
+    <li><a href="#story">Our Story</a></li>
+    <li><a href="#journal">Journal</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="nav-icon" aria-label="Search">
+      <svg viewBox="0 0 24 24" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    </button>
+    <button class="nav-icon cart-icon" aria-label="Bag">
+      <svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+    </button>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <video class="hero-video" autoplay muted loop playsinline poster="https://www.vayomeie.com/assets/img/hero/hero-4.jpg">
+    <source src="https://www.vayomeie.com/assets/videos/hero-5.mp4" type="video/mp4">
+  </video>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Women's Handcraft Collection 2025</p>
+    <h1 class="hero-title">Wear the<br><em>art of India</em>,<br>every day.</h1>
+    <p class="hero-sub">Eco-friendly dyes. Breathable cotton.<br>Silhouettes for the modern Indian woman.</p>
+    <a href="#shop" class="btn-primary">
+      Explore Collection
+      <svg viewBox="0 0 24 24" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span class="ticker-item"><span class="ticker-dot"></span>Handcrafted in Andhra Pradesh</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Eco-Friendly Natural Dyes</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Breathable Cotton Fabrics</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Zero Overproduction</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Modern Indian Silhouettes</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Size Inclusive</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Artisan Driven</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Women's Exclusive Label</span>
+    <!-- duplicate for seamless loop -->
+    <span class="ticker-item"><span class="ticker-dot"></span>Handcrafted in Andhra Pradesh</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Eco-Friendly Natural Dyes</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Breathable Cotton Fabrics</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Zero Overproduction</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Modern Indian Silhouettes</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Size Inclusive</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Artisan Driven</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Women's Exclusive Label</span>
+  </div>
+</div>
+
+<!-- FEATURED COLLECTION -->
+<section class="collection-section" id="shop">
+  <div class="section-head reveal">
+    <div>
+      <span class="section-label">Featured Collection</span>
+      <h2 class="section-title">Handpicked pieces,<br><em>crafted with intention</em></h2>
+    </div>
+    <a href="#" class="view-all reveal reveal-delay-2">View All →</a>
+  </div>
+  <div class="products-grid">
+    <div class="product-card reveal">
+      <img src="https://www.vayomeie.com/assets/img/products/6a0c7140a18d2-img9464-cmpr.jpg" alt="Halter Neck Tiered Dress" loading="lazy">
+      <div class="product-tag">Bestseller</div>
+      <div class="product-info">
+        <p class="product-name">Halter Neck Tiered Dress</p>
+        <p class="product-price"><span class="original">₹3,299</span> ₹2,499</p>
+      </div>
+    </div>
+    <div class="product-card reveal reveal-delay-1">
+      <img src="https://www.vayomeie.com/assets/img/products/6a0c713fbb8b1-img9472-cmpr.jpg" alt="V-Neck Front Slit Dress" loading="lazy">
+      <div class="product-info">
+        <p class="product-name">V-Neck Front-Slit Aline Dress</p>
+        <p class="product-price"><span class="original">₹3,299</span> ₹2,499</p>
+      </div>
+    </div>
+    <div class="product-card reveal reveal-delay-2">
+      <img src="https://www.vayomeie.com/assets/img/products/6a0c713f54fe4-img9474-cmpr.jpg" alt="Caphands Alia Cut" loading="lazy">
+      <div class="product-info">
+        <p class="product-name">Caphands Alia-Cut Dress</p>
+        <p class="product-price"><span class="original">₹2,799</span> ₹2,199</p>
+      </div>
+    </div>
+    <div class="product-card reveal reveal-delay-1">
+      <img src="https://www.vayomeie.com/assets/img/products/6a02bd594c27c-dsc09060.jpg" alt="Aline Dress" loading="lazy">
+      <div class="product-info">
+        <p class="product-name">Hem-Tiered Aline Dress</p>
+        <p class="product-price"><span class="original">₹2,798</span> ₹2,199</p>
+      </div>
+    </div>
+    <div class="product-card reveal reveal-delay-2">
+      <img src="https://www.vayomeie.com/assets/img/products/6a02c280c71ef-dsc09767.jpg" alt="Puff Sleeve Dress" loading="lazy">
+      <div class="product-info">
+        <p class="product-name">Aline Ruched Puff-Sleeve</p>
+        <p class="product-price"><span class="original">₹2,798</span> ₹2,199</p>
+      </div>
+    </div>
+    <div class="product-card reveal reveal-delay-3">
+      <img src="https://www.vayomeie.com/assets/img/products/6a02beb572a17-dsc09219.jpg" alt="Indigo Dress" loading="lazy">
+      <div class="product-tag">New</div>
+      <div class="product-info">
+        <p class="product-name">Rich Maroon Pomegranate</p>
+        <p class="product-price"><span class="original">₹2,799</span> ₹2,499</p>
+      </div>
+    </div>
+    <div class="product-card reveal reveal-delay-4">
+      <img src="https://www.vayomeie.com/assets/img/products/6a02bb26b4654-dsc09122.jpg" alt="Ethnic Dress" loading="lazy">
+      <div class="product-info">
+        <p class="product-name">Blue Elephant Tiered Dress</p>
+        <p class="product-price"><span class="original">₹3,299</span> ₹2,499</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- USP STRIP -->
+<div class="usp-strip">
+  <div class="usp-item reveal">
+    <img class="usp-icon" src="https://www.vayomeie.com/assets/img/usp/usp-eco.png" alt="Eco-Friendly">
+    <h3 class="usp-title">Eco-Friendly Colours</h3>
+    <p class="usp-desc">Our colours are kind to the earth — natural dyes that look vibrant, feel gentle, and leave no trace behind.</p>
+  </div>
+  <div class="usp-item reveal reveal-delay-2">
+    <img class="usp-icon" src="https://www.vayomeie.com/assets/img/usp/usp-breathable.png" alt="Breathable">
+    <h3 class="usp-title">Breathable Fabrics</h3>
+    <p class="usp-desc">Cotton that feels like a second skin — soft, light, and perfectly suited for Indian weathers.</p>
+  </div>
+  <div class="usp-item reveal reveal-delay-3">
+    <img class="usp-icon" src="https://www.vayomeie.com/assets/img/usp/usp-silhouette.png" alt="Silhouettes">
+    <h3 class="usp-title">Modern Silhouettes</h3>
+    <p class="usp-desc">Daily ethnic wear with architectural lines — traditional roots, contemporary confidence.</p>
+  </div>
+</div>
+
+<!-- CRAFT SECTION -->
+<div class="craft-strip" id="story">
+  <div class="craft-text reveal">
+    <span class="section-label">The Craft</span>
+    <h2 class="section-title" style="color:var(--ivory)">Where tradition<br><em>meets tomorrow</em></h2>
+    <p class="craft-body">
+      Every Vayomeie piece is born in the heart of <strong>Andhra Pradesh</strong>, where artisans have been weaving stories into fabric for generations. We work directly with local craftswomen, ensuring every stitch carries both cultural legacy and fair livelihood.<br><br>
+      We use <strong>natural dyes</strong> derived from indigo, pomegranate, madder and myrobalan — ancient ingredients that colour with integrity.
+    </p>
+    <div class="craft-cta">
+      <a href="#" class="btn-primary" style="background:transparent; border:1px solid var(--ivory);">Our Full Story</a>
+    </div>
+  </div>
+  <div class="craft-images reveal reveal-delay-2">
+    <div class="ci">
+      <img src="https://www.vayomeie.com/assets/img/products/VAY-IND-007/01.jpg" alt="Craft 1" loading="lazy">
+    </div>
+    <div class="ci">
+      <img src="https://www.vayomeie.com/assets/img/products/VAY-IND-004/07.jpg" alt="Craft 2" loading="lazy">
+    </div>
+    <div class="ci">
+      <img src="https://www.vayomeie.com/assets/img/products/VAY-IND-005/05.jpg" alt="Craft 3" loading="lazy">
+    </div>
+  </div>
+</div>
+
+<!-- PHOTO STRIP -->
+<div class="photo-strip">
+  <div class="photo-strip-inner" id="photoStrip">
+    <div class="photo-strip-item"><img src="https://www.vayomeie.com/assets/img/products/6a02bb26811dd-dsc09118.jpg" alt="" loading="lazy"></div>
+    <div class="photo-strip-item"><img src="https://www.vayomeie.com/assets/img/products/6a02ba37312f7-dsc09106.jpg" alt="" loading="lazy"></div>
+    <div class="photo-strip-item"><img src="https://www.vayomeie.com/assets/img/products/6a008c5c2cc0b-dsc09082.jpg" alt="" loading="lazy"></div>
+    <div class="photo-strip-item"><img src="https://www.vayomeie.com/assets/img/products/6a02c27ea5b38-dsc09709.jpg" alt="" loading="lazy"></div>
+    <div class="photo-strip-item"><img src="https://www.vayomeie.com/assets/img/products/6a02beb518855-dsc09168.jpg" alt="" loading="lazy"></div>
+    <div class="photo-strip-item"><img src="https://www.vayomeie.com/assets/img/products/6a02b9a8b9946-dsc09085.jpg" alt="" loading="lazy"></div>
+    <div class="photo-strip-item"><img src="https://www.vayomeie.com/assets/img/products/6a02c1117a535-dsc09390.jpg" alt="" loading="lazy"></div>
+    <div class="photo-strip-item"><img src="https://www.vayomeie.com/assets/img/products/6a02b8f80f1e9-dsc09103.jpg" alt="" loading="lazy"></div>
+    <!-- duplicate -->
+    <div class="photo-strip-item"><img src="https://www.vayomeie.com/assets/img/products/6a02bb26811dd-dsc09118.jpg" alt="" loading="lazy"></div>
+    <div class="photo-strip-item"><img src="https://www.vayomeie.com/assets/img/products/6a02ba37312f7-dsc09106.jpg" alt="" loading="lazy"></div>
+    <div class="photo-strip-item"><img src="https://www.vayomeie.com/assets/img/products/6a008c5c2cc0b-dsc09082.jpg" alt="" loading="lazy"></div>
+    <div class="photo-strip-item"><img src="https://www.vayomeie.com/assets/img/products/6a02c27ea5b38-dsc09709.jpg" alt="" loading="lazy"></div>
+    <div class="photo-strip-item"><img src="https://www.vayomeie.com/assets/img/products/6a02beb518855-dsc09168.jpg" alt="" loading="lazy"></div>
+    <div class="photo-strip-item"><img src="https://www.vayomeie.com/assets/img/products/6a02b9a8b9946-dsc09085.jpg" alt="" loading="lazy"></div>
+    <div class="photo-strip-item"><img src="https://www.vayomeie.com/assets/img/products/6a02c1117a535-dsc09390.jpg" alt="" loading="lazy"></div>
+    <div class="photo-strip-item"><img src="https://www.vayomeie.com/assets/img/products/6a02b8f80f1e9-dsc09103.jpg" alt="" loading="lazy"></div>
+  </div>
+</div>
+
+<!-- NEW ARRIVALS -->
+<section class="new-arrivals">
+  <div class="section-head reveal">
+    <div>
+      <span class="section-label">New Arrivals</span>
+      <h2 class="section-title">The Indigo<br><em>Indulgence Edit</em></h2>
+    </div>
+    <a href="#" class="view-all">Shop All →</a>
+  </div>
+  <div class="arrivals-grid">
+    <div class="arrival-card reveal">
+      <div class="arrival-img">
+        <img src="https://www.vayomeie.com/assets/img/products/VAY-IND-003/05.jpg" alt="" loading="lazy">
+        <div class="arrival-overlay"><span>Quick View</span></div>
+      </div>
+      <p class="arrival-name">Indigo Handblock Kurta</p>
+      <p class="arrival-price">₹2,499 <span class="sale">New</span></p>
+    </div>
+    <div class="arrival-card reveal reveal-delay-1">
+      <div class="arrival-img">
+        <img src="https://www.vayomeie.com/assets/img/products/VAY-IND-006/02.jpg" alt="" loading="lazy">
+        <div class="arrival-overlay"><span>Quick View</span></div>
+      </div>
+      <p class="arrival-name">Pomegranate Block Print</p>
+      <p class="arrival-price">₹2,799</p>
+    </div>
+    <div class="arrival-card reveal reveal-delay-2">
+      <div class="arrival-img">
+        <img src="https://www.vayomeie.com/assets/img/products/VAY-IND-009/03.jpg" alt="" loading="lazy">
+        <div class="arrival-overlay"><span>Quick View</span></div>
+      </div>
+      <p class="arrival-name">Madder Root Aline Dress</p>
+      <p class="arrival-price"><span class="sale" style="margin-left:0">₹2,199</span></p>
+    </div>
+    <div class="arrival-card reveal reveal-delay-3">
+      <div class="arrival-img">
+        <img src="https://www.vayomeie.com/assets/img/products/VAY-IND-010/02.jpg" alt="" loading="lazy">
+        <div class="arrival-overlay"><span>Quick View</span></div>
+      </div>
+      <p class="arrival-name">Teal Floral Handcraft Set</p>
+      <p class="arrival-price">₹3,299</p>
+    </div>
+  </div>
+</section>
+
+<!-- MATERIALS -->
+<section class="materials-section">
+  <div class="section-head reveal">
+    <div>
+      <span class="section-label">Natural Ingredients</span>
+      <h2 class="section-title">Colours born<br><em>from the earth</em></h2>
+    </div>
+  </div>
+  <div class="materials-grid">
+    <div class="material-card reveal">
+      <img src="https://www.vayomeie.com/assets/img/raw-materials/indigo.jpg" alt="Indigo" loading="lazy">
+      <div class="material-label">
+        <span class="material-name">Indigo</span>
+        <span class="material-role">Deep Blue Dye</span>
+      </div>
+    </div>
+    <div class="material-card reveal reveal-delay-1">
+      <img src="https://www.vayomeie.com/assets/img/raw-materials/pomegranate.jpg" alt="Pomegranate" loading="lazy">
+      <div class="material-label">
+        <span class="material-name">Pomegranate</span>
+        <span class="material-role">Golden Mordant</span>
+      </div>
+    </div>
+    <div class="material-card reveal reveal-delay-2">
+      <img src="https://www.vayomeie.com/assets/img/raw-materials/madder.jpg" alt="Madder" loading="lazy">
+      <div class="material-label">
+        <span class="material-name">Madder</span>
+        <span class="material-role">Terracotta Dye</span>
+      </div>
+    </div>
+    <div class="material-card reveal reveal-delay-3">
+      <img src="https://www.vayomeie.com/assets/img/raw-materials/myrobalan.jpg" alt="Myrobalan" loading="lazy">
+      <div class="material-label">
+        <span class="material-name">Myrobalan</span>
+        <span class="material-role">Tannin Base</span>
+      </div>
+    </div>
+    <div class="material-card reveal reveal-delay-4">
+      <img src="https://www.vayomeie.com/assets/img/raw-materials/alum.jpg" alt="Alum" loading="lazy">
+      <div class="material-label">
+        <span class="material-name">Alum</span>
+        <span class="material-role">Natural Mordant</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STORY BAND -->
+<div class="story-band">
+  <div class="reveal">
+    <span class="story-eyebrow">Our Philosophy</span>
+    <h2 class="story-title">Conscious luxury<br><em>for the modern</em><br>Indian woman</h2>
+    <p class="story-body">
+      Vayomeie was born from a belief — that clothing can be both beautiful and responsible. Each piece celebrates India's extraordinary textile heritage while embracing the freedom of contemporary design. We create for women who move through the world with intention.
+    </p>
+    <a href="#" class="story-cta">Read Our Story →</a>
+  </div>
+  <div class="story-visual reveal reveal-delay-2">
+    <img class="sv-tall" src="https://www.vayomeie.com/assets/img/products/6a02c751c39ab-dsc09057.jpg" alt="Story">
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <img src="https://www.vayomeie.com/assets/img/products/6a02bb26e3e20-dsc09135.jpg" alt="Craft" style="width:100%;height:50%;object-fit:cover;">
+      <img src="https://www.vayomeie.com/assets/img/products/6a02c48ae00d5-dsc09317.jpg" alt="Weave" style="width:100%;height:50%;object-fit:cover;">
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-band">
+  <div class="stat-item reveal">
+    <div class="stat-num" data-count="500">0</div>
+    <div class="stat-label">Artisan Women Supported</div>
+  </div>
+  <div class="stat-item reveal reveal-delay-1">
+    <div class="stat-num" data-count="6">0</div>
+    <div class="stat-label">Natural Dye Sources</div>
+  </div>
+  <div class="stat-item reveal reveal-delay-2">
+    <div class="stat-num" data-count="100">0</div>
+    <div class="stat-label">% Natural Cotton</div>
+  </div>
+  <div class="stat-item reveal reveal-delay-3">
+    <div class="stat-num" data-count="0">0</div>
+    <div class="stat-label">Synthetic Dyes Used</div>
+  </div>
+</div>
+
+<!-- JOURNAL -->
+<section class="journal-section" id="journal">
+  <div class="section-head reveal">
+    <div>
+      <span class="section-label">Journal</span>
+      <h2 class="section-title">Stories of<br><em>craft & culture</em></h2>
+    </div>
+    <a href="#" class="view-all">All Articles →</a>
+  </div>
+  <div class="journal-grid">
+    <div class="journal-card reveal">
+      <div class="journal-img">
+        <img src="https://www.vayomeie.com/assets/img/blog/lifestyle-friends.jpg" alt="Journal" loading="lazy">
+      </div>
+      <span class="journal-category">Lifestyle</span>
+      <h3 class="journal-title">Why gifting handcrafted sarees is the most thoughtful gesture</h3>
+      <p class="journal-excerpt">Beyond fabric and thread lies an intention — the care of hands that shaped it, the hours of devotion woven into every inch.</p>
+      <span class="journal-date">May 2025</span>
+    </div>
+    <div class="journal-card reveal reveal-delay-1">
+      <div class="journal-img">
+        <img src="https://www.vayomeie.com/assets/img/blog/saree-gift-set.jpg" alt="Saree Gift" loading="lazy">
+      </div>
+      <span class="journal-category">Craft Heritage</span>
+      <h3 class="journal-title">The ancient art of natural dyeing in Andhra Pradesh</h3>
+      <p class="journal-excerpt">Generations of knowledge, passed through touch and practice, live in every shade we create — from indigo blue to madder terracotta.</p>
+      <span class="journal-date">April 2025</span>
+    </div>
+    <div class="journal-card reveal reveal-delay-2">
+      <div class="journal-img">
+        <img src="https://www.vayomeie.com/assets/img/products/VAY-IND-008/05.jpg" alt="Style" loading="lazy">
+      </div>
+      <span class="journal-category">Style Guide</span>
+      <h3 class="journal-title">How to style your Vayomeie dress for every occasion</h3>
+      <p class="journal-excerpt">From morning markets to evening celebrations — the versatility of handcraft clothing that moves with you through your day.</p>
+      <span class="journal-date">March 2025</span>
+    </div>
+  </div>
+</section>
+
+<!-- HERITAGE BAND (decorative) -->
+<div class="heritage-band" style="background:var(--cream);color:var(--terra);">
+  <svg viewBox="0 0 1600 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet">
+    <rect x="0" y="95" width="1600" height="5" fill="currentColor" opacity="0.3"/>
+    <!-- Simple geometric Indian pattern -->
+    <g fill="none" stroke="currentColor" stroke-width="1" opacity="0.4">
+      <path d="M0,50 Q100,10 200,50 Q300,90 400,50 Q500,10 600,50 Q700,90 800,50 Q900,10 1000,50 Q1100,90 1200,50 Q1300,10 1400,50 Q1500,90 1600,50"/>
+      <path d="M0,60 Q100,20 200,60 Q300,100 400,60 Q500,20 600,60 Q700,100 800,60 Q900,20 1000,60 Q1100,100 1200,60 Q1300,20 1400,60 Q1500,100 1600,60"/>
+    </g>
+    <g fill="currentColor" opacity="0.25">
+      <circle cx="200" cy="50" r="5"/>
+      <circle cx="600" cy="50" r="5"/>
+      <circle cx="1000" cy="50" r="5"/>
+      <circle cx="1400" cy="50" r="5"/>
+      <circle cx="400" cy="70" r="3"/>
+      <circle cx="800" cy="30" r="3"/>
+      <circle cx="1200" cy="70" r="3"/>
+    </g>
+  </svg>
+</div>
+
+<!-- NEWSLETTER -->
+<div class="newsletter" id="contact">
+  <span class="section-label reveal">Stay in the loop</span>
+  <h2 class="section-title reveal">Join the inner circle</h2>
+  <p class="newsletter-sub reveal">Be the first to know about new collections, artisan stories, and exclusive offers. No noise — only beauty.</p>
+  <div class="newsletter-form reveal">
+    <input type="email" placeholder="Your email address">
+    <button>Subscribe</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand-logo">
+        <img src="https://www.vayomeie.com/assets/img/logo/vayomeie_small_logo_HD.png" alt="Vayomeie" onerror="this.style.display='none'">
+      </div>
+      <p class="footer-tagline">"Conscious luxury for the modern minimalist — women's handcraft from the heart of India."</p>
+      <div class="footer-social">
+        <a href="#" aria-label="Instagram">In</a>
+        <a href="#" aria-label="Pinterest">Pi</a>
+        <a href="#" aria-label="Facebook">Fb</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="#">New Arrivals</a></li>
+        <li><a href="#">Dresses</a></li>
+        <li><a href="#">Kurtas</a></li>
+        <li><a href="#">Sarees</a></li>
+        <li><a href="#">Gift Sets</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">Our Story</a></li>
+        <li><a href="#">Sustainability</a></li>
+        <li><a href="#">Artisan Partners</a></li>
+        <li><a href="#">Journal</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">Shipping Policy</a></li>
+        <li><a href="#">Returns</a></li>
+        <li><a href="#">Size Guide</a></li>
+        <li><a href="#">Care Instructions</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2025 Vayomeie. All rights reserved.</p>
+    <p class="footer-made">Crafted with <span>♥</span> in Andhra Pradesh, India</p>
+  </div>
+</footer>
+
+<script>
+// ── LOADER ──
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('done');
+  }, 1900);
+});
+
+// ── CURSOR LOGIC ──
+const cursor = document.getElementById('cursor');
+let cx = 0, cy = 0;
+document.addEventListener('mousemove', e => {
+  cx = e.clientX; cy = e.clientY;
+  cursor.style.left = cx + 'px';
+  cursor.style.top = cy + 'px';
+});
+// Apply 'hovered' class to cursor when over interactive elements
+const hoverTargets = 'a, button, .product-card, .arrival-card, .material-card, .journal-card, .usp-item';
+document.querySelectorAll(hoverTargets).forEach(el => {
+  el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+  el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+});
+
+// ── NAV SCROLL (UPDATED FOR CONTRAST) ──
+const mainNav = document.getElementById('mainNav');
+window.addEventListener('scroll', () => {
+  // Toggle 'scrolled' class which changes text color from white to dark
+  if (window.scrollY > 50) {
+    mainNav.classList.add('scrolled');
+  } else {
+    mainNav.classList.remove('scrolled');
+  }
+});
+
+// ── MOBILE MENU ──
+const menu = document.getElementById('mobileMenu');
+document.getElementById('hamburger').addEventListener('click', () => menu.classList.add('open'));
+document.getElementById('menuClose').addEventListener('click', () => menu.classList.remove('open'));
+menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => menu.classList.remove('open')));
+
+// ── REVEAL ON SCROLL ──
+const reveals = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+}, { threshold: 0.1 });
+reveals.forEach(el => io.observe(el));
+
+// ── COUNTER ANIMATION ──
+const counters = document.querySelectorAll('[data-count]');
+const cio = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const el = e.target;
+      const target = +el.dataset.count;
+      const suffix = target === 0 ? '' : target === 100 ? '%' : target > 100 ? '+' : '';
+      const duration = 1800;
+      const step = duration / (target || 1);
+      let current = 0;
+      const inc = target > 0 ? Math.ceil(target / 60) : 0;
+      const timer = setInterval(() => {
+        current = Math.min(current + inc, target);
+        el.textContent = current + suffix;
+        if (current >= target) clearInterval(timer);
+      }, step);
+      cio.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+counters.forEach(c => cio.observe(c));
+
+// ── SMOOTH SCROLL ──
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const id = a.getAttribute('href');
+    if (id === '#') return;
+    const target = document.querySelector(id);
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+});
+
+// ── PARALLAX HERO ──
+window.addEventListener('scroll', () => {
+  const hero = document.querySelector('.hero-video');
+  if (hero) hero.style.transform = `translateY(${window.scrollY * 0.3}px)`;
+});
+</script>
+</body>
+</html>
